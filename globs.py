@@ -6,10 +6,7 @@ import bpy
 
 sys.path.insert(0, site.getusersitepackages())
 
-pil_exist = all(
-    importlib.util.find_spec(module) is not None
-    for module in ("PIL", "PIL.Image", "PIL.ImageChops")
-)
+pil_exist = True
 
 is_blender_2_79_or_older = bpy.app.version < (2, 80, 0)
 is_blender_2_80_or_newer = bpy.app.version >= (2, 80, 0)
