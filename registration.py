@@ -28,15 +28,15 @@ __bl_classes = [
 def register_all(bl_info: Dict[str, Union[str, tuple]]) -> None:
     _register_classes()
     initialize_smc_icons()
-    addon_updater_ops.register(bl_info)
-    addon_updater_ops.check_for_update_background()
+    # addon_updater_ops.register(bl_info)
+    # addon_updater_ops.check_for_update_background()
     extend_types.register()
 
 
 def unregister_all() -> None:
     _unregister_classes()
     unload_smc_icons()
-    addon_updater_ops.unregister()
+    # addon_updater_ops.unregister()
     extend_types.unregister()
 
 
