@@ -322,10 +322,11 @@ def sort_materials(mat_list: List[bpy.types.Material]) -> ValuesView[MatDictItem
         diffuse_rgba = get_diffuse(mat)
 
         if packed_file:
-            key = (
-                packed_file,
-                diffuse_rgba if mat.smc_diffuse else DEFAULT_DIFFUSE,
-            )
+            # key = (
+            #     packed_file,
+            #     diffuse_rgba if mat.smc_diffuse else DEFAULT_DIFFUSE,
+            # )
+            key = (packed_file, DEFAULT_DIFFUSE)
             mat_dict[key].append(mat)
         else:
             mat_dict[diffuse_rgba].append(mat)
@@ -712,13 +713,14 @@ def _rgb_to_255_scale(diffuse: Diffuse) -> Diffuse:
     Returns:
         Color values converted to 0-255 range with gamma correction
     """
-    rgb = np.empty(shape=(0,), dtype=int)
-    for c in diffuse:
-        if c < 0.0:
-            srgb = 0
-        elif c < GAMMA_THRESHOLD:
-            srgb = c * LINEAR_FACTOR
-        else:
-            srgb = GAMMA_FACTOR * pow(c, 1.0 / 2.4) - 0.055
-        rgb = np.append(rgb, np.clip(round(srgb * 255), 0, 255))
-    return tuple(rgb)
+    # rgb = np.empty(shape=(0,), dtype=int)
+    # for c in diffuse:
+    #     if c < 0.0:
+    #         srgb = 0
+    #     elif c < GAMMA_THRESHOLD:
+    #         srgb = c * LINEAR_FACTOR
+    #     else:
+    #         srgb = GAMMA_FACTOR * pow(c, 1.0 / 2.4) - 0.055
+    #     rgb = np.append(rgb, np.clip(round(srgb * 255), 0, 255))
+    # return tuple(rgb)
+    return tuple(np.clip([round(c * 255) for c in diffuse], 0, 255))

@@ -439,15 +439,27 @@ def _configure_material(mat: bpy.types.Material, texture: bpy.types.Texture) -> 
     mat.use_backface_culling = True
     mat.use_nodes = True
 
-    node_texture = mat.node_tree.nodes.new(type='ShaderNodeTexImage')
-    node_texture.image = texture.image
-    node_texture.label = 'Material Combiner Texture'
-    node_texture.location = -300, 300
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    nodes.clear()
 
-    mat.node_tree.links.new(node_texture.outputs['Color'],
-                            mat.node_tree.nodes['Principled BSDF'].inputs['Base Color'])
-    mat.node_tree.links.new(node_texture.outputs['Alpha'],
-                            mat.node_tree.nodes['Principled BSDF'].inputs['Alpha'])
+    tex_node = nodes.new(type='ShaderNodeTexImage')
+    tex_node.image = texture.image
+    tex_node.label = 'Atlas Texture'
+    tex_node.location = (-300, 0)
+    nodes.active = tex_node 
+
+    bsdf_node = nodes.new(type='ShaderNodeBsdfPrincipled')
+    bsdf_node.location = (0, 0)
+    bsdf_node.inputs['Roughness'].default_value = 1.0
+    bsdf_node.inputs['Specular'].default_value = 0.0
+    bsdf_node.inputs['Metallic'].default_value = 0.0
+
+    output_node = nodes.new(type='ShaderNodeOutputMaterial')
+    output_node.location = (300, 0)
+
+    links.new(tex_node.outputs['Color'], bsdf_node.inputs['Base Color'])
+    links.new(bsdf_node.outputs['BSDF'], output_node.inputs['Surface'])
 
 
 def _configure_material_legacy(mat: bpy.types.Material, texture: bpy.types.Texture) -> None:
